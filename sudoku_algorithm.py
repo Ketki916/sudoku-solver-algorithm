@@ -423,8 +423,6 @@ while number > 0 : # number > 0   number = number - 1
                                 count = count - 1
                 itemIndex = itemIndex + 1
 
-# check code
-
     for grid in gridMatrix:
         referenceNumber = ""
         gridItemIndex = 0
@@ -465,6 +463,87 @@ while number > 0 : # number > 0   number = number - 1
                         itemIndex = itemIndex + 1
             gridItemIndex = gridItemIndex + 1
 
+    
+    for column in columnMatrix:
+        referenceNumber = ""
+        columnItemIndex = 0
+        for columnItem in column:
+            indexList = []
+            if len(columnItem) > 1:
+                referenceNumber = columnItem
+                counter = 1
+                indexList.append(columnItemIndex)
+                nextColumnItemIndex = 0
+                for nextColumnItem in column:
+                    if len(nextColumnItem) > 1 and columnItemIndex != nextColumnItemIndex:
+                        shouldInclude = True
+                        for digit in nextColumnItem:
+                            if digit not in referenceNumber:
+                                shouldInclude = False
+                        if shouldInclude == True:
+                            indexList.append(nextColumnItemIndex)
+                            counter = counter + 1
+                    if counter == len(referenceNumber):
+                        break
+                    nextColumnItemIndex = nextColumnItemIndex + 1
+                if counter == len(referenceNumber):
+                    itemIndex = 0
+                    for thirdColumnItem in column:
+                        columnIndex = columnMatrix.index(column)
+                        if len(thirdColumnItem) > 1:
+                            for digit in referenceNumber:
+                                if (digit in thirdColumnItem) and (itemIndex not in indexList):
+                                    newNumber = columnMatrix[columnIndex][itemIndex].replace(digit, "")
+                                    columnMatrix[columnIndex][itemIndex] = newNumber
+                                    sudokuMatrix[itemIndex][columnIndex] = newNumber
+                                    gridIndex = columnToGrid(columnIndex, itemIndex)
+                                    gridMatrix[gridIndex[0]][gridIndex[1]] = newNumber
+                                    if len(newNumber) == 1:
+                                        count = count - 1
+                        itemIndex = itemIndex + 1
+            columnItemIndex = columnItemIndex + 1
+
+
+    for row in sudokuMatrix:
+        referenceNumber = ""
+        rowItemIndex = 0
+        for rowItem in row:
+            indexList = []
+            if len(rowItem) > 1:
+                referenceNumber = rowItem
+                counter = 1
+                indexList.append(rowItemIndex)
+                nextRowItemIndex = 0
+                for nextRowItem in row:
+                    if len(nextRowItem) > 1 and rowItemIndex != nextRowItemIndex:
+                        shouldInclude = True
+                        for digit in nextRowItem:
+                            if digit not in referenceNumber:
+                                shouldInclude = False
+                        if shouldInclude == True:
+                            indexList.append(nextRowItemIndex)
+                            counter = counter + 1
+                    if counter == len(referenceNumber):
+                        break
+                    nextRowItemIndex = nextRowItemIndex + 1
+                if counter == len(referenceNumber):
+                    itemIndex = 0
+                    for thirdRowItem in row:
+                        rowIndex = sudokuMatrix.index(row)
+                        if len(thirdRowItem) > 1:
+                            for digit in referenceNumber:
+                                if (digit in thirdRowItem) and (itemIndex not in indexList):
+                                    newNumber = sudokuMatrix[rowIndex][itemIndex].replace(digit, "")
+                                    sudokuMatrix[rowIndex][itemIndex] = newNumber
+                                    columnMatrix[itemIndex][rowIndex] = newNumber
+                                    gridIndex = rowToGrid(rowIndex, itemIndex)
+                                    gridMatrix[gridIndex[0]][gridIndex[1]] = newNumber
+                                    if len(newNumber) == 1:
+                                        count = count - 1
+                        itemIndex = itemIndex + 1
+            rowItemIndex = rowItemIndex + 1
+
+
                         
 
 
@@ -473,11 +552,11 @@ while number > 0 : # number > 0   number = number - 1
     number = number - 1
 
 print(sudokuMatrix)
-print("hi")
+''' print("hi")
 print(gridMatrix)
 print("hi")
 print(columnMatrix)
-print("hi") 
+print("hi") '''
 print(count)
 
 
