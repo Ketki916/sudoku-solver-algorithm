@@ -3,13 +3,23 @@
 # Whenever indexing, take care to check for repeating items in list
 # Add code to take care of what would happen if two grids/two rows/two columns were the exact same and were indexed
 
-''' sudokuMatrix = [["5","3",".",".","7",".",".",".","."],["6",".",".","1","9","5",".",".","."],[".","9","8",".",".",".",".","6","."],["8",".",".",".","6",".",".",".","3"],["4",".",".","8",".","3",".",".","1"],["7",".",".",".","2",".",".",".","6"],[".","6",".",".",".",".","2","8","."],[".",".",".","4","1","9",".",".","5"],[".",".",".",".","8",".",".","7","9"]]'''
+'''sudokuMatrix = [["5","3",".",".","7",".",".",".","."],
+["6",".",".","1","9","5",".",".","."],[".","9","8",".",".",".",".","6","."],
+["8",".",".",".","6",".",".",".","3"],["4",".",".","8",".","3",".",".","1"],
+["7",".",".",".","2",".",".",".","6"],[".","6",".",".",".",".","2","8","."],
+[".",".",".","4","1","9",".",".","5"],[".",".",".",".","8",".",".","7","9"]]'''
 
 sudokuMatrix = [[".","2",".","6",".","8",".",".","."],
 ["5","8",".",".",".","9","7",".","."],[".",".",".",".","4",".",".",".","."],
 ["3","7",".",".",".",".","5",".","."],["6",".",".",".",".",".",".",".","4"],
 [".",".","8",".",".",".",".","1","3"],[".",".",".",".","2",".",".",".","."],
 [".",".","9","8",".",".",".","3","6"],[".",".",".","3",".","6",".","9","."]]
+
+''' sudokuMatrix = [[".",".",".","6",".",".","4",".","."], 
+["7",".",".",".",".","3","6",".","."], [".",".",".",".","9","1",".","8","."],
+[".",".",".",".",".",".",".",".","."], [".","5",".","1","8",".",".",".","3"],
+[".",".",".","3",".","6",".","4","5"], [".","4",".","2",".",".",".","6","."],
+["9",".","3",".",".",".",".",".","."], [".","2",".",".",".",".","1",".","."]]'''
 
 count = 0
 
@@ -196,8 +206,7 @@ def gridToColumn(gridNumber, gridItem):
     return [columnNumber, columnItem]
 
 
-number = 5
-while number > 0 : # number > 0   number = number - 1
+while count > 0 :
 
     for row in sudokuMatrix:
         removeNumbers = ""
@@ -544,20 +553,155 @@ while number > 0 : # number > 0   number = number - 1
             rowItemIndex = rowItemIndex + 1
 
 
-                        
+    for row in sudokuMatrix:
+        for digit in range(1,10):
+            indexList = []
+            rowItemIndex = 0
+            for rowItem in row:
+                if str(digit) in rowItem:
+                    indexList.append(rowItemIndex)
+                rowItemIndex = rowItemIndex + 1
+            if len(indexList) == 1:
+                if len(sudokuMatrix[sudokuMatrix.index(row)][indexList[0]]) > 1:
+                    count = count - 1
+                sudokuMatrix[sudokuMatrix.index(row)][indexList[0]] = str(digit)
+                columnMatrix[indexList[0]][sudokuMatrix.index(row)] = str(digit)
+                gridIndex = rowToGrid(sudokuMatrix.index(row), indexList[0])
+                gridMatrix[gridIndex[0]][gridIndex[1]] = str(digit)
+            else:
+                rowItemIndex = 0
+                mainRow = ""
+                restOfRow = ""
+                for rowItem in row:
+                    if rowItemIndex in indexList:
+                        mainRow = mainRow + rowItem
+                    else:
+                        restOfRow = restOfRow + rowItem
+                    rowItemIndex = rowItemIndex + 1
+                counter = 0
+                matchedDigits = ""
+                for nextDigit in range(1,10):
+                    if (str(nextDigit) in mainRow) and (str(nextDigit) not in restOfRow):
+                        matchedDigits = matchedDigits + str(nextDigit)
+                        counter = counter + 1
+                if counter == len(indexList):
+                    for rowItemIndex in indexList:
+                        rowIndex = sudokuMatrix.index(row)
+                        for thirdDigit in range(0,10):
+                            check = 0
+                            if str(thirdDigit) not in matchedDigits:
+                                if len(sudokuMatrix[rowIndex][rowItemIndex]) > 1:
+                                    check = 1
+                                newNumber = sudokuMatrix[rowIndex][rowItemIndex].replace(str(thirdDigit), "")
+                                sudokuMatrix[rowIndex][rowItemIndex] = newNumber
+                                columnMatrix[rowItemIndex][rowIndex] = newNumber
+                                gridIndex = rowToGrid(rowIndex, rowItemIndex)
+                                gridMatrix[gridIndex[0]][gridIndex[1]] = newNumber
+                                if len(newNumber) == 1 and check == 1:
+                                    count = count - 1
 
+    for column in columnMatrix:
+        for digit in range(1,10):
+            indexList = []
+            columnItemIndex = 0
+            for columnItem in column:
+                if str(digit) in columnItem:
+                    indexList.append(columnItemIndex)
+                columnItemIndex = columnItemIndex + 1
+            if len(indexList) == 1:
+                if len(columnMatrix[columnMatrix.index(column)][indexList[0]]) > 1:
+                    count = count - 1
+                columnMatrix[columnMatrix.index(column)][indexList[0]] = str(digit)
+                sudokuMatrix[indexList[0]][columnMatrix.index(column)] = str(digit)
+                gridIndex = columnToGrid(columnMatrix.index(column), indexList[0])
+                gridMatrix[gridIndex[0]][gridIndex[1]] = str(digit)
+            else:
+                columnItemIndex = 0
+                mainColumn = ""
+                restOfColumn = ""
+                for columnItem in column:
+                    if columnItemIndex in indexList:
+                        mainColumn = mainColumn + columnItem
+                    else:
+                        restOfColumn = restOfColumn + columnItem
+                    columnItemIndex = columnItemIndex + 1
+                counter = 0
+                matchedDigits = ""
+                for nextDigit in range(1,10):
+                    if (str(nextDigit) in mainColumn) and (str(nextDigit) not in restOfColumn):
+                        matchedDigits = matchedDigits + str(nextDigit)
+                        counter = counter + 1
+                if counter == len(indexList):
+                    for columnItemIndex in indexList:
+                        columnIndex = columnMatrix.index(column)
+                        for thirdDigit in range(0,10):
+                            check = 0
+                            if str(thirdDigit) not in matchedDigits:
+                                if len(columnMatrix[columnIndex][columnItemIndex]) > 1:
+                                    check = 1
+                                newNumber = columnMatrix[columnIndex][columnItemIndex].replace(str(thirdDigit), "")
+                                columnMatrix[columnIndex][columnItemIndex] = newNumber
+                                sudokuMatrix[columnItemIndex][columnIndex] = newNumber
+                                gridIndex = columnToGrid(columnIndex, columnItemIndex)
+                                gridMatrix[gridIndex[0]][gridIndex[1]] = newNumber
+                                if len(newNumber) == 1 and check == 1:
+                                    count = count - 1
+
+
+    for grid in gridMatrix:
+        for digit in range(1,10):
+            indexList = []
+            gridItemIndex = 0
+            for gridItem in grid:
+                if str(digit) in gridItem:
+                    indexList.append(gridItemIndex)
+                gridItemIndex = gridItemIndex + 1
+            if len(indexList) == 1:
+                if len(gridMatrix[gridMatrix.index(grid)][indexList[0]]) > 1:
+                    count = count - 1
+                gridMatrix[gridMatrix.index(grid)][indexList[0]] = str(digit)
+                rowIndex = gridToRow(gridMatrix.index(grid), indexList[0])
+                sudokuMatrix[rowIndex[0]][rowIndex[1]] = str(digit)
+                columnIndex = gridToColumn(gridMatrix.index(grid), indexList[0])
+                columnMatrix[columnIndex[0]][columnIndex[1]] = str(digit)
+            else:
+                gridItemIndex = 0
+                mainGrid = ""
+                restOfGrid = ""
+                for gridItem in grid:
+                    if gridItemIndex in indexList:
+                        mainGrid = mainGrid + gridItem
+                    else:
+                        restOfGrid = restOfGrid + gridItem
+                    gridItemIndex = gridItemIndex + 1
+                counter = 0
+                matchedDigits = ""
+                for nextDigit in range(1,10):
+                    if (str(nextDigit) in mainGrid) and (str(nextDigit) not in restOfGrid):
+                        matchedDigits = matchedDigits + str(nextDigit)
+                        counter = counter + 1
+                if counter == len(indexList):
+                    for gridItemIndex in indexList:
+                        gridIndex = gridMatrix.index(grid)
+                        for thirdDigit in range(0,10):
+                            check = 0
+                            if str(thirdDigit) not in matchedDigits:
+                                if len(gridMatrix[gridIndex][gridItemIndex]) > 1:
+                                    check = 1
+                                newNumber = gridMatrix[gridIndex][gridItemIndex].replace(str(thirdDigit), "")
+                                gridMatrix[gridIndex][gridItemIndex] = newNumber
+                                rowIndex = gridToRow(gridIndex, gridItemIndex)
+                                sudokuMatrix[rowIndex[0]][rowIndex[1]] = newNumber
+                                columnIndex = gridToColumn(gridIndex, gridItemIndex)
+                                columnMatrix[columnIndex[0]][columnIndex[1]] = newNumber
+                                if len(newNumber) == 1 and check == 1:
+                                    count = count - 1
+                            
 
     
 
-    number = number - 1
 
 print(sudokuMatrix)
-''' print("hi")
-print(gridMatrix)
-print("hi")
-print(columnMatrix)
-print("hi") '''
-print(count)
 
 
    
