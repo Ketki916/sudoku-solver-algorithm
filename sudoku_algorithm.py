@@ -1,7 +1,4 @@
 
-# Don't forget to decrease count every item becomes single digit
-# Whenever indexing, take care to check for repeating items in list
-# Add code to take care of what would happen if two grids/two rows/two columns were the exact same and were indexed
 
 '''sudokuMatrix = [["5","3",".",".","7",".",".",".","."],
 ["6",".",".","1","9","5",".",".","."],[".","9","8",".",".",".",".","6","."],
